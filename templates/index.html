@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+   <head>
+   		<title> Mini project #2 </title>
+
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <script type = "text/javascript" src = "https://d3js.org/d3.v4.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script src="{{ url_for('static', filename='d3-tip-master/d3-tip.js')}}"></script>
+
+      <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+      <script src = "{{ url_for('static', filename='state.js')}}"></script>
+      <script src = "{{ url_for('static', filename='counties.js')}}"></script>
+      <script src = "{{ url_for('static', filename='unemployment.js')}}"></script>
+      
+  
+   </head>
+
+   <body>
+   		<h1> Final Project: COVID-19 Visualization </h1>
+
+   		<!-- navigation bar -->
+   		<div class="navbar">
+        <div class="dropdown">
+          <button class="dropbtn"> State Visualization
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a id="USA" href="#" onclick="generateStatePlot(this.id)">USA</a>
+            <a id="India" href="#" onclick="generateStatePlot(this.id)">India</a>
+            <a id="USA_Pop" href="#" onclick="generateStatePlot(this.id)">USA Population</a>
+            <a id="India_Pop" href="#" onclick="generateStatePlot(this.id)">India Population</a>
+            <a id="USA_Counties" href="#" onclick="generateCountiesPlot(this.id)">USA Counties</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <button class="dropbtn"> Unemployment
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a id="unemp" href="#" onclick="generateEmpPlot(this.id)">USA</a>
+          </div>
+        </div>
+      </div>
+      <div class="tooltip" style="opacity: 0;"></div>
+      <button id="county_specific" type="button" style="visibility:hidden;" onclick="generateCountiesPlot(this.id)">See County Specific Cases</button>
+      <button id="state_specific_deaths" type="button" style="visibility: hidden;" onclick="generateCountiesPlot(this.id)">See State Cases</button>
+   		<div id="graph_plot">
+        <svg> </svg> 
+      </div>
+      <div id="slider"></div>
+      <!-- <div class="row align-items-center">
+        <div class="col-sm-2"><p id="value-time" style="visibility: hidden;"></p></div>
+        <div class="col-sm"><div id="slider-time" style="visibility: hidden;"></div></div>
+      </div> -->
+      <script src="https://d3js.org/topojson.v2.min.js"></script>
+   </body>
+
+   <!-- <script type="text/javascript">
+   </script> -->
+
+ </html>

@@ -1,0 +1,202 @@
+/*#graph_plot {
+  position: fixed;
+  top:200;
+  left:100;
+}*/
+
+.foo { 
+  position:fixed; 
+  top:800; 
+  /*left:50; */
+  /*right:-50;*/
+  height:90%; 
+  width:98.8% ;
+}
+.stat { 
+  position:fixed; 
+  top:500; 
+  /*left:90%;*/
+  right:-50;
+  /*right:50;*/
+  /*height:100; */
+  /*width:100;*/
+}
+
+
+.background {
+  /*fill: none;*/
+  pointer-events: all;
+}
+
+#states {
+  fill: steelblue;
+}
+
+#states .active {
+  display:none;
+}
+
+#state-borders {
+  fill: none;
+  stroke: black;
+  stroke-width: 1.5px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+.county-boundary {
+  fill: #aaa;
+  /*stroke: #fff;*/
+  stroke-width: .5px;
+}
+
+/*.county-boundary:hover, .state:hover {
+  fill: orange;
+  opacity: 1;
+}*/
+
+.state:hover {
+  fill: orange;
+  opacity: 1;
+}
+
+/*Old Part*/
+/*path:hover {
+  fill-opacity: 0.7;
+}*/
+     
+/* Legend Font Style */
+body {
+  font: 15px sans-serif;
+}
+
+.axis line {
+  stroke: #e8e8e8;
+}
+
+.axis path {
+  display: none;
+}
+
+.frame {
+  fill: none;
+  stroke: black;
+}
+
+h1 {
+    text-align: center;
+}
+
+/* Navigation bar
+Refernece: https://www.w3schools.com/howto/howto_css_dropdown.asp
+*/
+.navbar {
+  overflow: hidden;
+  background-color: #444;
+}
+
+.navbar a {
+  float: left;
+  font-size: 16px;
+  color: white;
+  text-align: center;
+  padding: 14px 20px;
+  text-decoration: none;
+}
+
+/* dropdown element */
+.dropdown {
+  overflow: hidden;
+  float: left;
+}
+/* dropdown button */
+.dropdown .dropbtn {
+  font-size: 14px;  
+  color: white;
+  text-align: center;
+  padding: 14px 20px;
+  font: inherit;
+  background-color: #444;
+  border: none;
+  outline: none;
+
+}
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: #818c19;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #444;
+  min-width: 170px;
+  z-index: 1;
+}
+
+.dropdown-content a {
+  float: none; 
+  color: white;
+  padding: 14px 20px;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+}
+
+.dropdown-content a:hover {
+  background-color: #acbb21;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+div.tooltip { 
+    position: absolute;     
+    text-align: center;
+    color: white;     
+    width: 170px;          
+    height: 70px;         
+    padding: 2px;       
+    font: 13px sans-serif;    
+    background: black; 
+    border: 0px;    
+    border-radius: 8px;     
+    pointer-events: none;
+}
+
+.ticks {
+  font-size: 10px;
+}
+
+.track,
+.track-inset,
+.track-overlay {
+  stroke-linecap: round;
+}
+
+.track {
+  stroke: #000;
+  stroke-opacity: 0.3;
+  stroke-width: 10px;
+}
+
+.track-inset {
+  stroke: #ddd;
+  stroke-width: 8px;
+}
+
+.track-overlay {
+  pointer-events: stroke;
+  stroke-width: 50px;
+  stroke: transparent;
+  cursor: crosshair;
+}
+
+.handle {
+  fill: #fff;
+  stroke: #000;
+  stroke-opacity: 0.5;
+  stroke-width: 1.25px;
+}
