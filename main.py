@@ -205,7 +205,6 @@ def unemp():
 	data_dict['usa'] = mapUSA
 	return data_dict
 
-
 if __name__ == '__main__':
 	app.run(debug=True)
 	# USA_counties()

@@ -1,6 +1,6 @@
 // keep a dictionary of titles, just need to do this in one of the files
 var titles1 = {'USA_Counties': 'USA Counties', 'county_specific' : 'County Specific Cases', 'state_specific_deaths' : 'State Cases Deaths'};
-// NEw Comment
+
 function generateCountiesPlot(id) {
   console.log(titles1[id]);
   $.ajax({
