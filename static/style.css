@@ -1,9 +1,3 @@
-/*#graph_plot {
-  position: fixed;
-  top:200;
-  left:100;
-}*/
-
 .foo { 
   position:fixed; 
   top:800; 
@@ -12,16 +6,6 @@
   height:90%; 
   width:98.8% ;
 }
-.stat { 
-  position:fixed; 
-  top:500; 
-  /*left:90%;*/
-  right:-50;
-  /*right:50;*/
-  /*height:100; */
-  /*width:100;*/
-}
-
 
 .background {
   /*fill: none;*/

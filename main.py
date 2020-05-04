@@ -128,7 +128,8 @@ def India_population():
 
 @app.route('/USA_Counties')
 @app.route('/county_specific')
-@app.route('/state_specific_deaths')
+@app.route('/date_specific')
+@app.route('/usa_widespread')
 def USA_counties():
 	f = open("static/counties.json", "r")
 	mapUSA = json.load(f)

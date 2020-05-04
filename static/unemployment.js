@@ -36,15 +36,8 @@ function foo(response, title) {
   var svg = d3.select("#graph_plot")
       .append('svg')
       .attr('class', 'foo');
-      // .attr('class', 'center-container')
-      // .attr('height', height + margin.top + margin.bottom)
-      // .attr('height', height)
-      // .attr('width', width + margin.left + margin.right)
-      // .attr("y", margin.right + 1000);
-      // .attr("fill", "none");
 
   svg.append('rect')
-      // .attr('class', 'background center-container')
       .attr('height', "100%")
       .attr('width', width + margin.left + margin.right)
       .on('click', clicked);

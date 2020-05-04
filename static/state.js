@@ -23,7 +23,11 @@ function generateStatePlot(id) {
 
 function drawStatePlot(response, title) {
   document.getElementById("county_specific").style.visibility = "hidden";
-  document.getElementById("state_specific_deaths").style.visibility = "hidden";
+  document.getElementById("date_specific").style.visibility = "hidden";
+  document.getElementById("usa_widespread").style.visibility = "hidden";
+
+  
+
   console.log(response);
   const margin = {top: 100, right: 50, bottom: 100, left: 50};
   var width = 960;
@@ -36,41 +40,51 @@ function drawStatePlot(response, title) {
   // add a new svg object inside the graph_plot division
   var svg = d3.select("#graph_plot")
             .append("svg")
-            .attr("width", width + margin.right + margin.left)
-            .attr("height", height + margin.top + margin.bottom);
+            .attr("width", width + margin.right + margin.left + 700)
+            // .attr("width", width)
+            .attr("height", height);
+
   // creating a grey rectangle for beauty
   svg.append("rect")
-      .attr("width", width + margin.right + margin.left)
-      .attr("height", height + margin.top + margin.bottom)
-      .attr("y", margin.right + 20)
+      .attr("width", width - 200)
+      .attr("height", height)
       .attr("fill", "#f2f2f2");
+
   // giving a heading for understandablity
   svg.append("text")
        .attr("transform", "translate(75,0)")
-       .attr("x", width/2 - 50)
+       .attr("x", width/2 - 200)
        .attr("y", margin.top/2) // x, y coordinate
        .attr("text-anchor", "middle")  
        .attr("font-size", "24px") 
        .attr("text-decoration", "underline") // underline
        .text(title);
 
+  var barplot_width = width - margin.left - 160;
+  // var barplot_height = height - 100;
+  var barplot_height = height - 17;
+  var translate = width - 210;
+
+  var g = svg.append("g")
+                .attr("class", "barplot");
+  g.append('rect')
+    .attr('transform', 'translate(' + translate + ',0)')
+    .attr('height', barplot_height)
+    .attr('width', barplot_width)
+    .attr("fill", "#112222")
+      .attr("opacity", .9);
   //plot
 
   if(title.includes('USA Confirmed Cases')){
     // D3 Projection
     var projection = d3.geoAlbersUsa()
-               .translate([width/2, height/2])    // translate to center of screen
+               .translate([(width/2-100), height/2])    // translate to center of screen
                .scale([1000]);          // scale things down so see entire US
             
     // Define path generator
     var path = d3.geoPath()               // path generator that will convert GeoJSON to SVG paths
              .projection(projection);  // tell path generator to use albersUsa projection
 
-    //Create SVG element and append map to the SVG
-    var svg = d3.select("svg")
-          .attr("width", width)
-          .attr("height", height);
-            
     svg.selectAll("path")
         .data(response.usafeatures)
         .enter()
@@ -131,6 +145,103 @@ function drawStatePlot(response, title) {
                 .duration(500)    
                 .style("opacity", 0); 
         });
+
+    var states = [];
+    var confirmed = [];
+    var deaths = [];
+
+    data = response.usadata.sort(function (a, b) {
+            return d3.ascending(a.Confirmed, b.Confirmed);
+    })
+
+    data.forEach(function(d, i){
+        states.push(d.State);
+        confirmed.push(d.Confirmed);
+        deaths.push(d.Deaths);
+    });
+    
+
+    yScale = d3.scaleBand().domain(states).range ([barplot_height, 0]).padding(0.4);
+    xScale_con = d3.scaleLinear().domain([d3.min(confirmed) , d3.max(confirmed)]).range ([0, barplot_width]);
+    xScale_deaths = d3.scaleLinear().domain([d3.min(deaths) , d3.max(deaths)]).range ([0, barplot_width]);
+
+    var yaxis = g.append("g")
+      .attr("transform", "translate(" + barplot_width + ",0)")
+      .call(d3.axisLeft(yScale));
+
+    var xaxis = g.append("g")
+     .attr("transform", "translate(" + barplot_width + "," + barplot_height + ")")
+     .call(d3.axisBottom(xScale_con));
+
+    var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+
+    var bars = g.selectAll(".bar")
+       .data(response.usadata)
+       .enter().append("rect")
+         .attr("class", "bar")
+         .attr("transform", "translate(" + barplot_width + ",0)")
+         .attr("fill", "red")
+         // .attr("fill", function(d,i){
+         //  return colorScale(i);
+         // }) 
+         .attr("width", function(d){ return xScale_con(0); })
+         .attr("y", function(d){ return yScale(d.State); })
+         .attr("height", yScale.bandwidth());
+
+    g.selectAll(".bar")
+        .transition()
+        .duration(100)
+        .attr("width", function(d){ return xScale_con(d.Confirmed); })
+        .attr("y", function(d) { return yScale(d.State); })
+        .delay(function(d,i){return(i*100)});
+
+     var bars1 = g.selectAll(".bar1")
+       .data(response.usadata)
+       .enter().append("rect")
+         .attr("class", "bar1")
+         .attr("transform", "translate(" + barplot_width + ",0)")
+         .attr("fill", "white")
+         .attr("fill-opacity", "0.5")
+         .attr("width", function(d){ return xScale_deaths(0); })
+         .attr("y", function(d){ return yScale(d.State); })
+         .attr("height", yScale.bandwidth());
+
+      g.selectAll(".bar1")
+        .transition()
+        .duration(800)
+        .attr("width", function(d){ return xScale_deaths(d.Deaths); })
+        .attr("y", function(d) { return yScale(d.State); })
+        .delay(function(d,i){return(i*100)});
+
+    //purple
+     //     .on("mouseover", function(d) {
+     //    d3.select(this)
+     //      .transition()
+     //            .duration(400)
+     //      .attr('fill', '#396AB1')
+     //      .attr('width', xScale.bandwidth() + 10)
+     //      .attr("y", yScale(d.Confirmed) - 10)
+     //      .attr('height', barplot_height - yScale(d.Confirmed) + 10);
+     //    g.append('text')
+     //        .attr('id', 'text')
+     //        .attr('x', xScale(d[0]))
+     //        .attr('y', yScale(d[1]) - 20)
+     //        .attr('fill', 'black')
+     //        .attr('font-family', 'times-new-roman')
+     //        .attr('font-size', '20px')
+     //        .text(function(){return ['(' + d[0] + ', ' + d[1] + ')'];});
+     // })
+     //     .on("mouseout", function(d) {
+     //        d3.select(this)
+     //          .transition()
+     //            .duration(400)
+     //      .attr("fill", "#cf1b5a")
+     //      .attr('width', xScale.bandwidth())
+     //      .attr("y", function(d) { return yScale(d[1]); })
+     //      .attr('height', graphHeight - yScale(d[1]) );
+     //    svg.select('#text').remove();
+     //     })
+     // .attr("x", function(d, i){ return xScale(states[i]); })
   }
   else if(title.includes('India Confirmed Cases')){
     StatesData = {};
@@ -154,19 +265,12 @@ function drawStatePlot(response, title) {
 
     var proj = d3.geoMercator()
         .center([80,25])
-              .translate([width/2, height/2])
-              .scale(800);
-        // .translate([0, height/2])
-       //   .scale();
+              .translate([(width/2-100), height/2 - 30])
+              .scale(1000);
+
     var path = d3.geoPath().projection(proj);
 
-    //Create SVG element and append map to the SVG
-    var svg = d3.select("svg")
-          .attr("width", width)
-          .attr("height", height);
-
     // Load GeoJSON data and merge with states data
-    // d3.json("india.json", function(json) {
       svg.selectAll("path")
         .data(response.indiafeatures)
         .enter()
@@ -234,17 +338,12 @@ function drawStatePlot(response, title) {
   else if(title.includes('USA Population')){
     // D3 Projection
     var projection = d3.geoAlbersUsa()
-               .translate([width/2, height/2])    // translate to center of screen
+               .translate([(width/2-100), height/2])    // translate to center of screen
                .scale([1000]);          // scale things down so see entire US
             
     // Define path generator
     var path = d3.geoPath()               // path generator that will convert GeoJSON to SVG paths
              .projection(projection);  // tell path generator to use albersUsa projection
-
-    //Create SVG element and append map to the SVG
-    var svg = d3.select("svg")
-          .attr("width", width)
-          .attr("height", height);
 
     svg.selectAll("path")
         .data(response.usafeatures)
@@ -291,16 +390,11 @@ function drawStatePlot(response, title) {
   else if(title.includes('India Population')){
     var proj = d3.geoMercator()
         .center([80,25])
-              .translate([width/2, height/2])
-              .scale(800);
+              .translate([(width/2-100), height/2 - 30])
+              .scale(1000);
         // .translate([0, height/2])
        //   .scale();
     var path = d3.geoPath().projection(proj);
-
-    //Create SVG element and append map to the SVG
-    var svg = d3.select("svg")
-          .attr("width", width)
-          .attr("height", height);
 
     // Load GeoJSON data and merge with states data
       svg.selectAll("path")
@@ -347,7 +441,4 @@ function drawStatePlot(response, title) {
                 .style("opacity", 0); 
         });
   }
-
-  // centre the created bar_chart
-  // d3.select("#graph_plot").attr("align","center");
 }
