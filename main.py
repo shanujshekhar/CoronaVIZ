@@ -29,12 +29,7 @@ def usa():
 	data_dict = {}
 	data_dict['usafeatures'] = mapUSA['features']
 
-	temp_dict = {}
-	for i,st in enumerate([row['properties']['name'] for row in data_dict['usafeatures']]):
-		temp_dict[st] = i		
 	
-	data_dict['dict'] = temp_dict
-
 	def convertStates():
 		cases = pd.DataFrame(columns=['State', 'Active', 'Deaths', 'Confirmed'])
 
@@ -58,7 +53,25 @@ def usa():
 
 		cases.to_csv('static/USA_Cases.csv', index=False)
 
+	def newConvertStates():
+		data = pd.read_csv("static/us-states.csv")
+		states = {}
+
+		# print (data['date'])
+		data = data[data['date']=='2020-05-01']
+		data.to_csv('static/USA_Cases.csv', index=False)
+
+
+	# newConvertStates()
+
 	data = pd.read_csv('static/USA_Cases.csv')
+	
+	temp_dict = {}
+	for i, st in enumerate(data['state']):
+		temp_dict[st] = i		
+	
+	data_dict['dict'] = temp_dict
+
 	data_dict['usadata'] = data.to_dict(orient='records')
 
 	return data_dict
@@ -73,6 +86,13 @@ def india():
 	data_dict['indiafeatures'] = mapIndia['features']
 
 	data = pd.read_csv('static/India_Cases.csv')
+
+	temp_dict = {}
+	for i, st in enumerate(data['State']):
+		temp_dict[st] = i		
+	
+	data_dict['dict'] = temp_dict
+
 	data_dict['indiadata'] = data.to_dict(orient='records')
 
 	return data_dict
@@ -93,10 +113,11 @@ def USA_population():
 
 	data_cases = pd.read_csv('static/USA_Cases.csv')
 	data_pop = pd.read_csv('static/USA_Population.csv')
-	data = data_cases.join(data_pop.set_index('State'), on='State')
+	data_pop.columns = ['state', 'Population']
+	data = data_cases.join(data_pop.set_index('state'), on='state')
 
-	data['Population'] = data['Confirmed'] / data['Population'] * 1000000
-		
+	data['Population'] = data['cases'] / data['Population'] * 1000000
+	data = data.dropna()
 	data_dict['data'] = data.to_dict(orient='records')
 
 	return data_dict
@@ -148,8 +169,8 @@ def USA_counties():
 				fips = int(row['fips'])
 
 				if fips in counties:
-					counties[fips]['cases'] += row['cases']
-					counties[fips]['deaths'] += row['deaths']
+					counties[fips]['cases'] = row['cases']
+					counties[fips]['deaths'] = row['deaths']
 				else:
 					counties[fips] = {'county': row['county'], 'state':row['state'], 'cases' : row['cases'], 'deaths' : row['deaths']}
 
@@ -171,7 +192,31 @@ def USA_counties():
 
 	# convertCounties()
 
-	# print ("Dumped")
+	def convertStates_datewise():
+		df = pd.read_csv('static/us-states.csv')
+		
+		date_wise = {}
+		states = {}
+
+		for i, row in df.iterrows():
+			st = row['state']
+
+			if st in states:
+				states[st]['cases'] = row['cases']
+				states[st]['deaths'] = row['deaths']
+			else:
+				states[st] = {'cases' : row['cases'], 'deaths' : row['deaths']}
+
+			if row['date'] in date_wise:
+				date_wise[row['date']][st] = {'cases' : states[st]['cases'], 'deaths' : states[st]['deaths']}
+			else:
+				date_wise[row['date']] = {st : {'cases' : states[st]['cases'], 'deaths' : states[st]['deaths']}}
+
+		with open('static/USA_States_datewise.json', 'w') as fp:
+			json.dump(date_wise, fp)
+
+	# convertStates_datewise()
+
 	f = open("static/USA_Counties.json", "r")
 	data = json.load(f)
 	data_dict['counties_data'] = data
@@ -180,6 +225,10 @@ def USA_counties():
 	data = json.load(f)
 	data_dict['counties_datewise'] = data
 
+	f = open("static/USA_States_datewise.json", "r")
+	data = json.load(f)
+	data_dict['states_datewise'] = data
+
 	data = pd.read_csv('static/USA_Cases.csv')
 	data_dict['usadata'] = data.to_dict(orient='records')
 
@@ -187,7 +236,7 @@ def USA_counties():
 	mapUSA = json.load(f)	
 
 	temp_dict = {}
-	for i,st in enumerate([row['properties']['name'] for row in mapUSA['features']]):
+	for i, st in enumerate(data['state']):
 		temp_dict[st] = i		
 	
 	data_dict['dict'] = temp_dict
@@ -209,4 +258,5 @@ def unemp():
 if __name__ == '__main__':
 	app.run(debug=True, use_reloader=True)
 	# USA_counties()
+
 	
