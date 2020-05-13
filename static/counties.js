@@ -249,9 +249,6 @@ function drawCountiesPlot(response, title) {
           .style("fill", function(d, i){
             if( !isNaN(path.centroid(d)[0]) )
                 coordinates[d.properties.name] = path.centroid(d);
-            else{
-              coordinates[d.properties.name] = d.geometry.coordinates[0][0][0];
-            }
             return color; })
           .style("stroke", "black");
     // g.append("g")
@@ -275,8 +272,6 @@ function drawCountiesPlot(response, title) {
     //         }
     //       return color;
     //     });
-
-    console.log(coordinates);
 
     var radio_buttons = g.append("g")
         .attr("id", "confirmed_button")
@@ -646,23 +641,23 @@ function drawCountiesPlot(response, title) {
         .attr("stroke-dasharray", totalLength + " " + totalLength)
         .attr("stroke-dashoffset", totalLength)
       .transition() // Call Transition Method
-        .duration(4000) // Set Duration timing (ms)
+        .duration(10) // Set Duration timing (ms)
         .ease(d3.easeLinear) // Set Easing option
         .attr("stroke-dashoffset", 0); // Set final value of dash-offset for transition
 
       // Add the dots
-      // bar_g.selectAll(".dot2")
-      //   .data(datewise)
-      //   .enter().append("circle") 
-      //    .attr("class", "dot2")
-      //    .attr("transform", "translate(" + translate + ",10)")
-      //    .attr("fill", "black")
-      //    .attr("style", "stroke:black;stroke-width:0.5px")
-      //    .transition() // Call Transition Method
-      //   .duration(4000) // Set Duration timing (ms)
-      //    .attr("cx", function(d) { return xScale_c(parseTime(d.date)); })
-      //    .attr("cy", function(d, i) { return yScale_c(d.cases); })
-      //    .attr("r", 1.5);
+      bar_g.selectAll(".dot2")
+        .data(datewise)
+        .enter().append("circle") 
+         .attr("class", "dot2")
+         .attr("transform", "translate(" + translate + ",10)")
+         .attr("fill", "black")
+         .attr("style", "stroke:black;stroke-width:0.5px")
+         .transition() // Call Transition Method
+        .duration(5) // Set Duration timing (ms)
+         .attr("cx", function(d) { return xScale_c(parseTime(d.date)); })
+         .attr("cy", function(d, i) { return yScale_c(d.cases); })
+         .attr("r", 1.5);
 
       // Line Plot for Death cases
       // Add X axis --> it is a date format
@@ -708,21 +703,23 @@ function drawCountiesPlot(response, title) {
         .attr("stroke-dasharray", totalLength + " " + totalLength)
         .attr("stroke-dashoffset", totalLength)
       .transition() // Call Transition Method
-        .duration(4000) // Set Duration timing (ms)
+        .duration(10) // Set Duration timing (ms)
         .ease(d3.easeLinear) // Set Easing option
         .attr("stroke-dashoffset", 0); // Set final value of dash-offset for transition
 
-      // // Add the dots
-      // bar_g.selectAll(".dot3")
-      //   .data(datewise)
-      //   .enter().append("circle") 
-      //    .attr("class", "dot3")
-      //    .attr("transform", "translate(" + translate + ",10)")
-      //    .attr("fill", "white")
-      //    .attr("style", "stroke:red;stroke-width:0.5px")
-      //    .attr("cx", function(d) { return xScale_d(parseTime(d.date)); })
-      //    .attr("cy", function(d, i) { return yScale_d(d.deaths); })
-      //    .attr("r", 1.5);
+      // Add the dots
+      bar_g.selectAll(".dot3")
+        .data(datewise)
+        .enter().append("circle") 
+         .attr("class", "dot3")
+         .attr("transform", "translate(" + translate + ",10)")
+         .attr("fill", "white")
+         .attr("style", "stroke:red;stroke-width:0.5px")
+         .transition() // Call Transition Method
+        .duration(5) // Set Duration timing (ms)
+         .attr("cx", function(d) { return xScale_d(parseTime(d.date)); })
+         .attr("cy", function(d, i) { return yScale_d(d.deaths); })
+         .attr("r", 1.5);
     }
 
     function drawCounties(type, color_type){
@@ -1188,23 +1185,23 @@ function drawCountiesPlot(response, title) {
         .attr("stroke-dasharray", totalLength + " " + totalLength)
         .attr("stroke-dashoffset", totalLength)
       .transition() // Call Transition Method
-        .duration(4000) // Set Duration timing (ms)
+        .duration(10) // Set Duration timing (ms)
         .ease(d3.easeLinear) // Set Easing option
         .attr("stroke-dashoffset", 0); // Set final value of dash-offset for transition
 
       // Add the dots
-      // bar_g.selectAll(".dot2")
-      //   .data(datewise)
-      //   .enter().append("circle") 
-      //    .attr("class", "dot2")
-      //    .attr("transform", "translate(" + translate + ",10)")
-      //    .attr("fill", "black")
-      //    .attr("style", "stroke:black;stroke-width:0.5px")
-      //    .transition() // Call Transition Method
-      //   .duration(4000) // Set Duration timing (ms)
-      //    .attr("cx", function(d) { return xScale_c(parseTime(d.date)); })
-      //    .attr("cy", function(d, i) { return yScale_c(d.cases); })
-      //    .attr("r", 1.5);
+      bar_g.selectAll(".dot2")
+        .data(datewise)
+        .enter().append("circle") 
+         .attr("class", "dot2")
+         .attr("transform", "translate(" + translate + ",10)")
+         .attr("fill", "black")
+         .attr("style", "stroke:black;stroke-width:0.5px")
+         .transition() // Call Transition Method
+        .duration(5) // Set Duration timing (ms)
+         .attr("cx", function(d) { return xScale_c(parseTime(d.date)); })
+         .attr("cy", function(d, i) { return yScale_c(d.cases); })
+         .attr("r", 1.5);
 
       // Line Plot for Death cases
       // Add X axis --> it is a date format
@@ -1250,21 +1247,23 @@ function drawCountiesPlot(response, title) {
         .attr("stroke-dasharray", totalLength + " " + totalLength)
         .attr("stroke-dashoffset", totalLength)
       .transition() // Call Transition Method
-        .duration(4000) // Set Duration timing (ms)
+        .duration(10) // Set Duration timing (ms)
         .ease(d3.easeLinear) // Set Easing option
         .attr("stroke-dashoffset", 0); // Set final value of dash-offset for transition
 
-      // // Add the dots
-      // bar_g.selectAll(".dot3")
-      //   .data(datewise)
-      //   .enter().append("circle") 
-      //    .attr("class", "dot3")
-      //    .attr("transform", "translate(" + translate + ",10)")
-      //    .attr("fill", "white")
-      //    .attr("style", "stroke:red;stroke-width:0.5px")
-      //    .attr("cx", function(d) { return xScale_d(parseTime(d.date)); })
-      //    .attr("cy", function(d, i) { return yScale_d(d.deaths); })
-      //    .attr("r", 1.5);
+      // Add the dots
+      bar_g.selectAll(".dot3")
+        .data(datewise)
+        .enter().append("circle") 
+         .attr("class", "dot3")
+         .attr("transform", "translate(" + translate + ",10)")
+         .attr("fill", "white")
+         .attr("style", "stroke:red;stroke-width:0.5px")
+         .transition() // Call Transition Method
+        .duration(5) // Set Duration timing (ms)
+         .attr("cx", function(d) { return xScale_d(parseTime(d.date)); })
+         .attr("cy", function(d, i) { return yScale_d(d.deaths); })
+         .attr("r", 1.5);
     }
   }
   else if(title=="COVID 19 Widespread - County Specific"){
