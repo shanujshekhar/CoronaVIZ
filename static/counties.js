@@ -455,12 +455,12 @@ function drawCountiesPlot(response, title) {
           if (text == "Pause") {
             moving = false;
             clearInterval(timer);
-            d3.select(this).select('text').text("Play");
+            d3.select(this).select('text').attr("x", 25).text("Play");
             draw(type, color_type, response.states_datewise[formatForKey(seletedDate)]);
           } else {
             moving = true;
             timer = setInterval(step, 100);
-            d3.select(this).select('text').text("Pause");
+            d3.select(this).select('text').attr("x", 15).text("Pause");
           }
         })
       .on("mouseup", function(d){
@@ -484,7 +484,7 @@ function drawCountiesPlot(response, title) {
         moving = false;
         currentValue = 0;
         clearInterval(timer);
-        d3.select("#play_button").select('text').text("Play");
+        d3.select("#play_button").select('text').attr("x", 25).text("Play");
       }
     }
 
@@ -996,12 +996,12 @@ function drawCountiesPlot(response, title) {
           if (text == "Pause") {
             moving = false;
             clearInterval(timer);
-            d3.select(this).select('text').text("Play");
+            d3.select(this).select('text').attr("x", 25).text("Play");
             draw(type, color_type, response.counties_datewise[formatForKey(seletedDate)]);
           } else {
             moving = true;
             timer = setInterval(step, 110);
-            d3.select(this).select('text').text("Pause");
+            d3.select(this).select('text').attr("x", 15).text("Pause");
           }
         })
       .on("mouseup", function(d){
@@ -1025,7 +1025,7 @@ function drawCountiesPlot(response, title) {
         moving = false;
         currentValue = 0;
         clearInterval(timer);
-        d3.select("#play_button").select('text').text("Play");
+        d3.select("#play_button").select('text').attr("x", 25).text("Play");
       }
     }
 
@@ -1442,6 +1442,7 @@ function drawCountiesPlot(response, title) {
 
     
     var selected = [];
+    var zoomTranslate;
 
     function clicked(d) {
       if (d3.select('.background').node() === this) return reset();
@@ -1456,17 +1457,20 @@ function drawCountiesPlot(response, title) {
       dy = bounds[1][1] - bounds[0][1],
       x = (bounds[0][0] + bounds[1][0]) / 2,
       y = (bounds[0][1] + bounds[1][1]) / 2,
-      scale = .9 / Math.max(dx / width, dy / height),
-      tra = [width / 2 - scale * x, height / 2 - scale * y];
+      scale = .9 / Math.max(dx / width, dy / height);
+      zoomTranslate = [width / 2 - scale * x, height / 2 - scale * y];
 
       seletedState = d;
 
       g.transition()
           .duration(750)
-          .attr("transform", "translate(" + tra + ")scale(" + scale + ")");
+          .attr("transform", "translate(" + zoomTranslate + ")scale(" + scale + ")");
       
       draw(d, type, color_type);
     }
+
+    var xScale;
+    var yScale;
 
     function draw(d, type, color_type){
 
@@ -1479,6 +1483,8 @@ function drawCountiesPlot(response, title) {
         .attr('width', barplot_width)
         .attr("fill", "#112222")
         .attr("opacity", .9);
+
+      selected = [];
 
       for (let [key, value] of Object.entries(coordinates)) {
 
@@ -1517,6 +1523,16 @@ function drawCountiesPlot(response, title) {
                         .duration(200)    
                         .style("opacity", .7);
 
+                  d3.select("#bar" + key)
+                    .transition()
+                    .duration(400)
+                    .attr('fill', 'blue')
+                    .attr('fill-opacity', '1')
+                    .attr('stroke', "white")
+                    .attr("stroke-width", "2px")
+                    .attr("width", xScale(response.counties_data[key][type]) + 10)
+                    .attr('height', yScale.bandwidth() + 10);
+
                   if(type=="cases")
                   {
                     div.html(response.counties_data[key]['county'] + "<br/>" + "State: " + response.counties_data[key]['state'] + "<br/>" + "Cases: " + response.counties_data[key]['cases'])
@@ -1538,6 +1554,16 @@ function drawCountiesPlot(response, title) {
                   div.transition()
                         .duration(500)    
                         .style("opacity", 0);
+
+                  d3.select("#bar" + key)
+                    .transition()
+                    .duration(400)
+                    .attr('fill', circle_color[type])
+                    .attr('fill-opacity', '1')
+                    .attr('stroke', 'none')
+                    .attr("stroke-width", "none")
+                    .attr("width", xScale(response.counties_data[key][type]))
+                    .attr('height', yScale.bandwidth());
                 });
             }
         }
@@ -1576,7 +1602,6 @@ function drawCountiesPlot(response, title) {
 
     function barPlot(selected, type){
 
-      console.log(selected);
       var selectedCounties = [];
       var yvalues = [];
       var counties = [];
@@ -1587,14 +1612,59 @@ function drawCountiesPlot(response, title) {
         else
           yvalues.push(response.counties_data[s]['deaths']);
 
-        selectedCounties.push(response.counties_data[s]);
+        county = response.counties_data[s];
+        county['id'] = s;
+        selectedCounties.push(county);
         counties.push(response.counties_data[s]['county']);
       });
 
-      console.log(selectedCounties);
+      // Top 50 counties to remove clutter of data
+      if(yvalues.length>50)
+      {
+        selectedCounties = [];
+        counties = [];
 
-      var xScale = d3.scaleLinear().domain([d3.min(yvalues) , d3.max(yvalues)]).range([0, barplot_width - 100]);
-      var yScale = d3.scaleBand().domain(counties).range([barplot_height, 0]).padding(0.4);
+        yvalues.sort(function(a, b){return b-a});
+        sortedyvalues = yvalues.slice(0,50);
+        min = sortedyvalues[sortedyvalues.length - 1];
+        max = sortedyvalues[0];
+        yvalues = [];
+
+        i = 0;
+        selected.forEach(function(s){
+            
+          if(type=="cases")
+          {
+            if(i<50 && response.counties_data[s]['cases'] >= min && response.counties_data[s]['cases'] <= max)
+            { 
+              i += 1; 
+              yvalues.push(response.counties_data[s]['cases']);
+              county = response.counties_data[s];
+              county['id'] = s;
+              selectedCounties.push(county);
+              counties.push(response.counties_data[s]['county']); 
+            }
+          }
+          else
+          {
+            if(i<50 && response.counties_data[s]['deaths'] >= min && response.counties_data[s]['deaths'] <= max)
+            {  
+              i += 1;
+              yvalues.push(response.counties_data[s]['deaths']);
+              county = response.counties_data[s];
+              county['id'] = s;
+              selectedCounties.push(county);
+              counties.push(response.counties_data[s]['county']); 
+            }
+          }
+        });
+
+      }
+
+      // console.log(selectedCounties);
+
+      xScale = d3.scaleLinear().domain([d3.min(yvalues) , d3.max(yvalues)]).range([0, barplot_width - 100]);
+      yScale = d3.scaleBand().domain(counties).range([barplot_height, 0]).padding(0.4);
 
       var yaxis = bar_g.append("g")
         .attr("class", "axis")
@@ -1611,18 +1681,79 @@ function drawCountiesPlot(response, title) {
       bar_g.selectAll(".bar")
          .data(selectedCounties)
          .enter().append("rect")
+           .attr("id", function(d){ return ('bar' + d.id); })
            .attr("class", "bar")
            .attr("transform", "translate(" + translate + ",0)")
-           .attr("fill", "red")
-           .attr("width", function(d){console.log(d); return xScale(d3.min(yvalues)); })
+           .attr("width", function(d){return xScale(d3.min(yvalues)); })
            .attr("y", function(d){ return yScale(d.county); })
-           .attr("height", yScale.bandwidth());
+           .attr("height", yScale.bandwidth())
+           .on('mouseover', function(d){
+            d3.select('#i' + d.id).style("fill" , "black")
+                    .style("opacity" , "0.7")
+                    .style("stroke" , "red");
+            d3.select(this)
+                    .transition()
+                    .duration(400)
+                    .attr('fill', 'blue')
+                    .attr('fill-opacity', '1')
+                    .attr('stroke', "white")
+                    .attr("stroke-width", "2px")
+                    .attr("width", xScale(response.counties_data[d.id][type]) + 10)
+                    .attr('height', yScale.bandwidth() + 10);
+
+            // div.transition()    
+            //       .duration(200)    
+            //       .style("opacity", 1);
+
+            if(type=="cases")
+            {
+              d3.select(this).append("text")
+                // .attr("class", "below")
+                .attr("x", 100)
+                .attr("y", yScale(d.county))
+                // .attr("text-anchor", "left")
+                .style("fill", "white")
+                .text(d.cases);
+                
+            }
+            else
+            {
+              d3.select(this).append("text")
+                .attr("class", "below")
+                .attr("x", 12)
+                .attr("dy", "1.2em")
+                // .attr("text-anchor", "left")
+                .style("fill", "white")
+                .text(d.deaths);
+                
+            }
+           })
+           .on('mouseout', function(d){
+            d3.select('#i' + d.id).style("fill" , color_type)
+                      .style("opacity" , "0.7")
+                      .style("stroke" , "#420D09");
+            d3.select(this)
+                    .transition()
+                    .duration(400)
+                    .attr('fill', circle_color[type])
+                    .attr('fill-opacity', '1')
+                    .attr('stroke', 'none')
+                    .attr("stroke-width", 'none')
+                    .attr("width", xScale(response.counties_data[d.id][type]))
+                    .attr('height', yScale.bandwidth());
+
+            // d3.select(this).select('text').remove();
+            // div.transition()
+            //         .duration(500)    
+            //         .style("opacity", 0);
+           });
 
       if(type=="cases")
       {
         bar_g.selectAll(".bar")
           .transition()
           .duration(800)
+          .attr("fill", circle_color['cases'])
           .attr("width", function(d){ return xScale(d.cases); })
           .attr("y", function(d) { return yScale(d.county); })
           .delay(function(d,i){return(i*20)});
@@ -1631,6 +1762,7 @@ function drawCountiesPlot(response, title) {
         bar_g.selectAll(".bar")
           .transition()
           .duration(800)
+          .attr("fill", circle_color['deaths'])
           .attr("width", function(d){ return xScale(d.deaths); })
           .attr("y", function(d) { return yScale(d.county); })
           .delay(function(d,i){return(i*20)});
