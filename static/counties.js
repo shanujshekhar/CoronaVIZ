@@ -1,6 +1,5 @@
 // keep a dictionary of titles, just need to do this in one of the files
-var titles1 = {'USA_Counties': 'COVID 19 Widespread', 'county_specific' : 'COVID 19 Widespread - County Specific',
-'date_specific' : 'COVID 19 Widespread Date Wise', 'usa_widespread' : 'COVID 19 Widespread'};
+var titles1 = {'USA_Counties': 'State Wise Spread of COVID-19', 'date_specific' : 'County Wise Spread of COVID-19', 'usa_widespread' : 'State Wise Spread of COVID-19'};
 
 function generateCountiesPlot(id) {
   console.log(titles1[id]);
@@ -13,7 +12,7 @@ function generateCountiesPlot(id) {
     },
     headers: {},
     success: function(result) {
-      // console.log(result);
+      console.log(result);
       drawCountiesPlot(result, titles1[id])
     },
     error: function(result) {
@@ -26,11 +25,8 @@ function drawCountiesPlot(response, title) {
 
   d3.select("#graph_plot").selectAll("svg").remove();// remove svg object if it exists
 
-  // d3.select("#county_specific").attr("style", "visibility:visible;position: fixed;left: 100px;top: 130px;border: 2px solid black;");
-  // d3.select("#date_specific").attr("style", "visibility:visible;position: fixed;left: 280px;top: 130px;border: 2px solid black;");
-  // d3.select("#usa_widespread").attr("style", "visibility:visible;position: fixed;left: 445px;top: 130px;border: 2px solid black;");
-
-  console.log(response);
+  // response = response.data;
+  // console.log(response);
   // Define the div for the tooltip
   var div = d3.select(".tooltip").style("opacity", 0);
 
@@ -50,8 +46,8 @@ function drawCountiesPlot(response, title) {
   svg.append("rect")
       .attr("width", width)
       .attr("height", height + margin.top + margin.bottom)
-      .attr("fill", "#112222")
-      .on('click', clicked);
+      .attr("fill", "#112222");
+      // .on('click', clicked);
 
   var path_button_width = width - 200;
   var path_button_height = height - 220;
@@ -75,8 +71,8 @@ function drawCountiesPlot(response, title) {
                     .attr("width", width - 225)
                     .attr("height", height);
 
-  var barplot_width = width - margin.left - 200;
-  var barplot_height = height - 30;
+  var plot_width = width - margin.left - 200;
+  var plot_height = height - 30;
   // var translate = width - margin.left + 65;
   var translate = 80;
 
@@ -85,8 +81,8 @@ function drawCountiesPlot(response, title) {
   bar_g.append('rect')
     .attr("class", "barRect")
     .attr('transform', 'translate(' + translate + ',0)')
-    .attr('height', barplot_height)
-    .attr('width', barplot_width)
+    .attr('height', plot_height)
+    .attr('width', plot_width)
     .attr("fill", "#112222")
     .attr("opacity", .9);
 
@@ -114,52 +110,10 @@ function drawCountiesPlot(response, title) {
 
   var circle_color = {"cases" : "yellow", "deaths" : "#FF2400"};
 
-  // See County Specific Cases Button
-  var radio_buttons = svg.append("g")
-        .attr("id", "case1")
-        .attr("transform", "translate(" + 10 + "," + 10 + ")")
-        .attr("fill", "#3b3b3b")
-        .attr("stroke", "#ffffff")
-        .attr("fill-opacity", "1")
-        .attr("stroke-opacity", "0.3")
-        .on("mouseover", function(d){
-          d3.select(this).attr("fill-opacity", "0.5");
-          d3.select(this).style("cursor", "pointer");
-          d3.select(this).select("circle").attr("fill", "red");
-        })
-        .on("mouseout", function(d){
-          d3.select(this).attr("fill-opacity", "1");
-          d3.select(this).select("circle").attr("fill", "white");
-        })
-        .on("mousedown", function(d){
-          d3.select(this).attr("fill", "red");
-          d3.selectAll(".circle").remove();
-          drawCountiesPlot(response, titles1["county_specific"]);
-        })
-        .on("mouseup", function(d){
-          d3.select(this).transition().delay(100).attr("fill", "#3b3b3b");
-        });
-    radio_buttons.append("path")
-        .attr("d", "M 17 0 L 180 0 a 17 17 0 0 1 17 17 L 197 17 a 17 17 0 0 1 -17 17 L 17 34 a 17 17 0 0 1 -17 -17 L 0 17 a 17 17 0 0 1 17 -17 Z");
-    radio_buttons.append("circle")
-        .attr("cx", 20)
-        .attr("cy", 18)
-        .attr("fill", "white")
-        .style("opacity", "0.7")
-        .style("stroke", "#420D09")
-        .style("stroke-width" , "2px")
-        .attr("r", 10);
-    radio_buttons.append("text")
-        .attr("x", 50)
-        .attr("y", 22)
-        .attr("fill", "white")
-        .attr("style", "font-size:11px;")
-        .text("See Country Specific Cases");
-
   // See Date Specific Cases Button
   var radio_buttons = svg.append("g")
         .attr("id", "case2")
-        .attr("transform", "translate(" + 210 + "," + 10 + ")")
+        .attr("transform", "translate(" + 10 + "," + 10 + ")")
         .attr("fill", "#3b3b3b")
         .attr("stroke", "#ffffff")
         .attr("fill-opacity", "1")
@@ -194,13 +148,13 @@ function drawCountiesPlot(response, title) {
         .attr("x", 50)
         .attr("y", 22)
         .attr("fill", "white")
-        .attr("style", "font-size:11px;")
-        .text("See Date Specific Cases");
+        .attr("style", "font-size:12px;")
+        .text("County Cases");
 
   // See State Cases Button
   var radio_buttons = svg.append("g")
         .attr("id", "case3")
-        .attr("transform", "translate(" + 410 + "," + 10 + ")")
+        .attr("transform", "translate(" + 210 + "," + 10 + ")")
         .attr("fill", "#3b3b3b")
         .attr("stroke", "#ffffff")
         .attr("fill-opacity", "1")
@@ -235,10 +189,32 @@ function drawCountiesPlot(response, title) {
         .attr("x", 50)
         .attr("y", 22)
         .attr("fill", "white")
-        .attr("style", "font-size:11px;")
-        .text("See State Cases");
+        .attr("style", "font-size:12px;")
+        .text("State Cases");
 
-  if(title=="COVID 19 Widespread"){
+
+  totalCases = null;
+  datewise = [];
+
+  function cases_in_us(){
+
+    for (let [key, value] of Object.entries(response.states_datewise)) {
+      cases = 0;
+      deaths = 0;
+
+      for (let [state, state_data] of Object.entries(value)) {
+        cases += state_data.cases;
+        deaths += state_data.deaths;
+      }
+      datewise.push({'date' : key, 'cases' : cases , 'deaths' : deaths});
+    }
+
+    totalCases = datewise[datewise.length - 1];  
+  }
+  
+  cases_in_us();
+
+  if(title=="State Wise Spread of COVID-19"){
     g.append("g")
         .attr("class", "states")
         .selectAll("path")
@@ -293,8 +269,8 @@ function drawCountiesPlot(response, title) {
           // draw("cases", circle_color["cases"]);
           type = "cases";
           color_type = circle_color[type];
-          if(seletedDate)
-            draw(type, color_type, response.states_datewise[formatForKey(seletedDate)]);
+          if(selectedDate)
+            draw(type, color_type, response.states_datewise[formatForKey(selectedDate)]);
         })
         .on("mouseup", function(d){
           d3.select(this).transition().delay(100).attr("fill", "#3b3b3b");
@@ -314,8 +290,8 @@ function drawCountiesPlot(response, title) {
         .attr("x", 50)
         .attr("y", 22)
         .attr("fill", "white")
-        .attr("style", "font-size:20px;")
-        .text("Confirmed");
+        .attr("style", "font-size:15px;")
+        .text("Positive Cases");
 
 
 
@@ -339,8 +315,8 @@ function drawCountiesPlot(response, title) {
         // draw("deaths", circle_color["deaths"]);
         type = "deaths";
         color_type = circle_color[type];
-        if(seletedDate)
-            draw(type, color_type, response.states_datewise[formatForKey(seletedDate)]);
+        if(selectedDate)
+            draw(type, color_type, response.states_datewise[formatForKey(selectedDate)]);
       })
       .on("mouseup", function(d){
         d3.select(this).transition().delay(100).attr("fill", "#3b3b3b");
@@ -360,13 +336,13 @@ function drawCountiesPlot(response, title) {
         .attr("x", 50)
         .attr("y", 22)
         .attr("fill", "white")
-        .attr("style", "font-size:20px;")
+        .attr("style", "font-size:15px;")
         .text("Deaths");
     
 
     var type = "cases";
     var color_type = circle_color[type];
-    var seletedDate = null;
+    var selectedDate = null;
 
 
     var formatDate = d3.timeFormat("%d-%b");
@@ -456,7 +432,7 @@ function drawCountiesPlot(response, title) {
             moving = false;
             clearInterval(timer);
             d3.select(this).select('text').attr("x", 25).text("Play");
-            draw(type, color_type, response.states_datewise[formatForKey(seletedDate)]);
+            draw(type, color_type, response.states_datewise[formatForKey(selectedDate)]);
           } else {
             moving = true;
             timer = setInterval(step, 100);
@@ -496,8 +472,8 @@ function drawCountiesPlot(response, title) {
       bar_g.append('rect')
         .attr("class", "barRect")
         .attr('transform', 'translate(' + translate + ',0)')
-        .attr('height', barplot_height)
-        .attr('width', barplot_width)
+        .attr('height', plot_height)
+        .attr('width', plot_width)
         .attr("fill", "#112222")
         .attr("opacity", .9);
 
@@ -506,9 +482,9 @@ function drawCountiesPlot(response, title) {
         .attr("x", x(h))
         .text(formatDate(h));
       
-      seletedDate = h;
+      selectedDate = h;
       draw(type, color_type, response.states_datewise[formatForKey(h)]);
-      linePlot(seletedDate);
+      linePlot(selectedDate);
     }
 
     function draw(type, color_type, states){
@@ -550,7 +526,7 @@ function drawCountiesPlot(response, title) {
                       .style("opacity", .7);
                 if(type=="cases")
                 {
-                  div.html("State: " + key + "<br/>" + "Cases: " + value['cases'])
+                  div.html("State: " + key + "<br/>" + "Positive Cases: " + value['cases'])
                     .style("left", (d3.event.pageX + 15) + "px")   
                     .style("top", (d3.event.pageY - 28) + "px");
                 }
@@ -579,23 +555,8 @@ function drawCountiesPlot(response, title) {
     linePlot(latest);
 
     function linePlot(latestDate){
-
-      var datewise = [];
-      var cases = 0;
-
-      for (let [key, value] of Object.entries(response.states_datewise)) {
-        cases = 0;
-        deaths = 0;
-
-        for (let [state, state_data] of Object.entries(value)) {
-          cases += state_data.cases;
-          deaths += state_data.deaths;
-        }
-        datewise.push({'date' : key, 'cases' : cases , 'deaths' : deaths});
-      }
-
-      var line_plot_width = barplot_width - 100;
-      var line_plot_height = barplot_height/2;
+      var line_plot_width = plot_width - 100;
+      var line_plot_height = plot_height/2;
 
       // Line Plot for confirmed cases
       // Add X axis --> it is a date format
@@ -659,12 +620,19 @@ function drawCountiesPlot(response, title) {
          .attr("cy", function(d, i) { return yScale_c(d.cases); })
          .attr("r", 1.5);
 
+      bar_g.append('text')
+        .attr("transform", "translate(" + translate + ",0)")
+        .attr('fill', 'white')
+        .attr('x', 140)
+        .attr('y', 25)
+        .text('Confirmed COVID19 Cases in USA');
+
       // Line Plot for Death cases
       // Add X axis --> it is a date format
       var xScale_d = d3.scaleTime().domain([earliest, latestDate]).range([0, line_plot_width]);
 
       // Add Y axis for Death cases
-      var yScale_d = d3.scaleLinear().domain([d3.min(datewise, function(d) { return d.cases; }), d3.max(datewise, function(d) { return d.deaths; })]).range([barplot_height - 20, line_plot_height + 80]);
+      var yScale_d = d3.scaleLinear().domain([d3.min(datewise, function(d) { return d.cases; }), d3.max(datewise, function(d) { return d.deaths; })]).range([plot_height - 20, line_plot_height + 80]);
 
       bar_g.append("rect")
             .attr("transform", "translate(" + translate + "," + (line_plot_height+50) + ")")
@@ -681,7 +649,7 @@ function drawCountiesPlot(response, title) {
 
       var xaxis = bar_g.append("g")
         .attr("class", "axis")
-        .attr("transform", "translate(" + translate + "," + barplot_height + ")")
+        .attr("transform", "translate(" + translate + "," + plot_height + ")")
         .call(d3.axisBottom(xScale_d).tickFormat(d3.timeFormat(xFormat)));
       
       var line = d3.line()
@@ -720,6 +688,13 @@ function drawCountiesPlot(response, title) {
          .attr("cx", function(d) { return xScale_d(parseTime(d.date)); })
          .attr("cy", function(d, i) { return yScale_d(d.deaths); })
          .attr("r", 1.5);
+
+      bar_g.append('text')
+        .attr("transform", "translate(" + translate + ",0)")
+        .attr('fill', 'white')
+        .attr('x', 130)
+        .attr('y', 360)
+        .text('Deaths due to COVID19 in USA');
     }
 
     function drawCounties(type, color_type){
@@ -761,7 +736,7 @@ function drawCountiesPlot(response, title) {
                         .style("opacity", .7);
                   if(type=="cases")
                   {
-                    div.html(response.counties_data[key]['county'] + "<br/>" + "State: " + response.counties_data[key]['state'] + "<br/>" + "Confirmed: " + response.counties_data[key]['cases'])
+                    div.html(response.counties_data[key]['county'] + "<br/>" + "State: " + response.counties_data[key]['state'] + "<br/>" + "Positive Cases: " + response.counties_data[key]['cases'])
                     .style("left", (d3.event.pageX + 15) + "px")   
                     .style("top", (d3.event.pageY - 28) + "px");
                   }
@@ -784,7 +759,7 @@ function drawCountiesPlot(response, title) {
         }
     }
   }
-  else if(title=="COVID 19 Widespread Date Wise"){
+  else if(title=="County Wise Spread of COVID-19"){
     g.append("g")
         .attr("class", "states")
         .selectAll("path")
@@ -819,7 +794,7 @@ function drawCountiesPlot(response, title) {
 
     var type = "cases";
     var color_type = circle_color[type];
-    var seletedDate = null;
+    var selectedDate = null;
 
     var radio_buttons = g.append("g")
         .attr("id", "confirmed_button")
@@ -841,8 +816,8 @@ function drawCountiesPlot(response, title) {
           d3.selectAll(".circle").remove();
           type = "cases";
           color_type = circle_color[type];
-          if(seletedDate)
-            draw(type, color_type, response.counties_datewise[formatForKey(seletedDate)]);
+          if(selectedDate)
+            draw(type, color_type, response.counties_datewise[formatForKey(selectedDate)]);
         })
         .on("mouseup", function(d){
           d3.select(this).transition().delay(100).attr("fill", "#3b3b3b");
@@ -862,8 +837,8 @@ function drawCountiesPlot(response, title) {
         .attr("x", 50)
         .attr("y", 22)
         .attr("fill", "white")
-        .attr("style", "font-size:20px;")
-        .text("Confirmed");
+        .attr("style", "font-size:15px;")
+        .text("Positive Cases");
 
     var radio_buttons = g.append("g")
       .attr("id", "deaths_button")
@@ -884,8 +859,8 @@ function drawCountiesPlot(response, title) {
         d3.selectAll(".circle").remove();
         type = "deaths";
         color_type = circle_color[type];
-        if(seletedDate)
-            draw(type, color_type, response.counties_datewise[formatForKey(seletedDate)]);
+        if(selectedDate)
+            draw(type, color_type, response.counties_datewise[formatForKey(selectedDate)]);
         // draw("deaths", "blue");
       })
       .on("mouseup", function(d){
@@ -906,7 +881,7 @@ function drawCountiesPlot(response, title) {
         .attr("x", 50)
         .attr("y", 22)
         .attr("fill", "white")
-        .attr("style", "font-size:20px;")
+        .attr("style", "font-size:15px;")
         .text("Deaths");
 
     // var formatDate = d3.timeFormat("%m/%d");
@@ -997,7 +972,7 @@ function drawCountiesPlot(response, title) {
             moving = false;
             clearInterval(timer);
             d3.select(this).select('text').attr("x", 25).text("Play");
-            draw(type, color_type, response.counties_datewise[formatForKey(seletedDate)]);
+            draw(type, color_type, response.counties_datewise[formatForKey(selectedDate)]);
           } else {
             moving = true;
             timer = setInterval(step, 110);
@@ -1037,8 +1012,8 @@ function drawCountiesPlot(response, title) {
       bar_g.append('rect')
         .attr("class", "barRect")
         .attr('transform', 'translate(' + translate + ',0)')
-        .attr('height', barplot_height)
-        .attr('width', barplot_width)
+        .attr('height', plot_height)
+        .attr('width', plot_width)
         .attr("fill", "#112222")
         .attr("opacity", .9);
 
@@ -1047,10 +1022,10 @@ function drawCountiesPlot(response, title) {
         .attr("x", x(h))
         .text(formatDate(h));
       
-      seletedDate = h;
+      selectedDate = h;
       
       draw(type, color_type, response.counties_datewise[formatForKey(h)]);
-      linePlot(seletedDate);
+      linePlot(selectedDate);
     }
 
     function draw(type, color_type, counties){
@@ -1092,7 +1067,7 @@ function drawCountiesPlot(response, title) {
                         .style("opacity", .7);
                   if(type=="cases")
                   {
-                    div.html(value['county'] + "<br/>" + "State: " + value['state'] + "<br/>" + "Cases: " + value['cases'])
+                    div.html(value['county'] + "<br/>" + "State: " + value['state'] + "<br/>" + "Positive Cases: " + value['cases'])
                       .style("left", (d3.event.pageX + 15) + "px")   
                       .style("top", (d3.event.pageY - 28) + "px");
                   }
@@ -1138,8 +1113,8 @@ function drawCountiesPlot(response, title) {
         datewise.push({'date' : key, 'cases' : cases , 'deaths' : deaths});
       }
 
-      var line_plot_width = barplot_width - 100;
-      var line_plot_height = barplot_height/2;
+      var line_plot_width = plot_width - 100;
+      var line_plot_height = plot_height/2;
 
       // Line Plot for confirmed cases
       // Add X axis --> it is a date format
@@ -1165,7 +1140,7 @@ function drawCountiesPlot(response, title) {
         .attr("class", "axis")
         .attr("transform", "translate(" + translate + "," + (line_plot_height+10) + ")")
         .call(d3.axisBottom(xScale_c).tickFormat(d3.timeFormat(xFormat)));
-      
+
       // Add the line
       var line = d3.line()
           .x(function(d) { return xScale_c(parseTime(d.date)); })
@@ -1203,12 +1178,19 @@ function drawCountiesPlot(response, title) {
          .attr("cy", function(d, i) { return yScale_c(d.cases); })
          .attr("r", 1.5);
 
+      bar_g.append('text')
+        .attr("transform", "translate(" + translate + ",0)")
+        .attr('fill', 'white')
+        .attr('x', 140)
+        .attr('y', 25)
+        .text('Confirmed COVID19 Cases in USA');
+
       // Line Plot for Death cases
       // Add X axis --> it is a date format
       var xScale_d = d3.scaleTime().domain([earliest, latestDate]).range([0, line_plot_width]);
 
       // Add Y axis for Death cases
-      var yScale_d = d3.scaleLinear().domain([d3.min(datewise, function(d) { return d.cases; }), d3.max(datewise, function(d) { return d.deaths; })]).range([barplot_height - 20, line_plot_height + 80]);
+      var yScale_d = d3.scaleLinear().domain([d3.min(datewise, function(d) { return d.cases; }), d3.max(datewise, function(d) { return d.deaths; })]).range([plot_height - 20, line_plot_height + 80]);
 
       bar_g.append("rect")
             .attr("transform", "translate(" + translate + "," + (line_plot_height+50) + ")")
@@ -1225,7 +1207,7 @@ function drawCountiesPlot(response, title) {
 
       var xaxis = bar_g.append("g")
         .attr("class", "axis")
-        .attr("transform", "translate(" + translate + "," + barplot_height + ")")
+        .attr("transform", "translate(" + translate + "," + plot_height + ")")
         .call(d3.axisBottom(xScale_d).tickFormat(d3.timeFormat(xFormat)));
       
       var line = d3.line()
@@ -1264,509 +1246,14 @@ function drawCountiesPlot(response, title) {
          .attr("cx", function(d) { return xScale_d(parseTime(d.date)); })
          .attr("cy", function(d, i) { return yScale_d(d.deaths); })
          .attr("r", 1.5);
-    }
-  }
-  else if(title=="COVID 19 Widespread - County Specific"){
 
-    g.append("g")
-        .attr("id", "counties")
-        .selectAll("path")
-        .data(topojson.feature(response.usa, response.usa.objects.counties).features)
-        .enter().append("path")
-          .attr("d", path)
-          .attr("class", "county-boundary")
-          .attr("stroke", "white")
-          .on("click", reset)
-          .attr("fill", function(d){
-            if( path.centroid(d)!=null )
-              coordinates[parseInt(d.id)] = path.centroid(d);
-            else{
-              if(d.geometry.coordinates[0][0].length>2){
-                if(projection(d.geometry.coordinates[0][0][0])!=null)
-                  coordinates[parseInt(d.id)] = projection(d.geometry.coordinates[0][0][0]);
-              }
-              else{
-                if(projection(d.geometry.coordinates[0][0])!=null)
-                  coordinates[parseInt(d.id)] = projection(d.geometry.coordinates[0][0]);
-              }  
-            }
-            return color;
-          });
-          // .on("mouseover", function(d){
-          //   // d3.select(this).style("fill" , "red");
-          //   // console.log(d.id);
-          //   div.transition()    
-          //         .duration(200)    
-          //         .style("opacity", .7);
-          //     if(parseInt(d.id) in response.counties_data){
-          //       div.html(d.properties.name + "<br/>" + "State: " + response.counties_data[parseInt(d.id)]['state'] + "<br/>" + "Cases: " + response.counties_data[parseInt(d.id)]['cases'] + "<br/>" + "Deaths: " + response.counties_data[parseInt(d.id)]['deaths'])
-          //         .style("left", (d3.event.pageX + 15) + "px")   
-          //         .style("top", (d3.event.pageY - 28) + "px");
-          //     }
-          //     else{
-          //       div.html(d.properties.name)
-          //         .style("left", (d3.event.pageX + 15) + "px")   
-          //         .style("top", (d3.event.pageY - 28) + "px");
-          //     }
-          // })
-          // .on("mouseout", function(d){
-          //   // d3.select(this).style("fill", color);
-          //   div.transition()
-          //         .duration(500)    
-          //         .style("opacity", 0);
-          // });
-          
-
-    g.append("g")
-      .attr("id", "states")
-      .selectAll("path")
-      .data(topojson.feature(response.usa, response.usa.objects.states).features)
-      .enter().append("path")
-        .attr("class", "state")
-        .attr("d", path)
-        .style("fill", color)
-        .style("stroke", "black")
-        .on("mouseover", function(d){
-          // console.log(d);
-          d3.select(this).style("fill", "red");
-          d3.select(this).style("cursor", "pointer");
-          div.transition()    
-                .duration(200)    
-                .style("opacity", .7);    
-            div.html(d.properties.name + "<br/>" + "<br/>" +"Confirmed: " + response.usadata[response.dict[d.properties.name]]['cases'] + "<br/>" + "Deaths: " + response.usadata[response.dict[d.properties.name]]['deaths'])  
-                .style("left", (d3.event.pageX + 15) + "px")   
-                .style("top", (d3.event.pageY - 28) + "px");
-        })
-        .on("mouseout", function(d){
-          d3.select(this).style("fill", color);
-          div.transition()
-                  .duration(500)    
-                  .style("opacity", 0);
-        })
-        .on("click", clicked);
-
-    g.append("path")
-        .datum(topojson.mesh(response.usa, response.usa.objects.states, function(a, b) { return a !== b; }))
-        .attr("id", "state-borders")
-        .attr("d", path);
-
-    var type = "cases";
-    var color_type = circle_color[type];
-    var seletedState = null;
-
-    var radio_buttons = svg.append("g")
-        .attr("id", "confirmed_button")
-        .attr("transform", "translate(" + path_button_width + "," + path_button_height + ")")
-        .attr("fill", "#3b3b3b")
-        .attr("stroke", "#ffffff")
-        .attr("fill-opacity", "1")
-        .attr("stroke-opacity", "0.3")
-        .on("mouseover", function(d){
-          d3.select(this).attr("fill-opacity", "0.5");
-          d3.select(this).style("cursor", "pointer");
-        })
-        .on("mouseout", function(d){
-          d3.select(this).attr("fill-opacity", "1");
-          type = "cases";
-        })
-        .on("mousedown", function(d){
-          d3.select(this).attr("fill", "red");
-          d3.selectAll(".circle").remove();
-          type = "cases";
-          color_type = circle_color[type];
-          if(seletedState)
-            draw(seletedState, type, color_type);
-        })
-        .on("mouseup", function(d){
-          d3.select(this).transition().delay(100).attr("fill", "#3b3b3b");
-        });
-    radio_buttons.append("path")
-        .attr("d", "M 17 0 L 180 0 a 17 17 0 0 1 17 17 L 197 17 a 17 17 0 0 1 -17 17 L 17 34 a 17 17 0 0 1 -17 -17 L 0 17 a 17 17 0 0 1 17 -17 Z");
-    radio_buttons.append("circle")
-        .attr("cx", 20)
-        .attr("cy", 18)
-        .attr("fill", circle_color["cases"])
-        .style("opacity", "0.7")
-        .style("stroke", "#420D09")
-        .style("stroke-width" , "2px")
-        .attr("r", 10);
-    radio_buttons.append("text")
-        .attr("x", 50)
-        .attr("y", 22)
-        .attr("fill", "white")
-        .attr("style", "font-size:20px;")
-        .text("Confirmed");
-
-
-    var radio_buttons = svg.append("g")
-      .attr("id", "deaths_button")
-      .attr("transform", "translate(" + path_button_width + "," + (path_button_height + margin.left) + ")")
-      .attr("fill", "#3b3b3b")
-      .attr("stroke", "#ffffff")
-      .attr("fill-opacity", "1")
-      .attr("stroke-opacity", "0.3")
-      .on("mouseover", function(d){
-          d3.select(this).attr("fill-opacity", "0.5");
-          d3.select(this).style("cursor", "pointer");
-        })
-        .on("mouseout", function(d){
-          d3.select(this).attr("fill-opacity", "1");
-        })
-      .on("mousedown", function(d){
-        d3.select(this).attr("fill", "red");
-        d3.selectAll(".circle").remove();
-        type = "deaths";
-        color_type = circle_color[type];
-        if(seletedState)
-            draw(seletedState, type, color_type);
-      })
-      .on("mouseup", function(d){
-        d3.select(this).transition().delay(100).attr("fill", "#3b3b3b");
-      });
-    radio_buttons.append("path")
-        .attr("d", "M 17 0 L 180 0 a 17 17 0 0 1 17 17 L 197 17 a 17 17 0 0 1 -17 17 L 17 34 a 17 17 0 0 1 -17 -17 L 0 17 a 17 17 0 0 1 17 -17 Z");
-    radio_buttons.append("circle")
-        .attr("cx", 20)
-        .attr("cy", 18)
-        .attr("fill", circle_color["deaths"])
-        .style("opacity", "0.7")
-        .style("stroke", "#420D09")
-        .style("stroke-width" , "2px")
-        .attr("r", 10);
-    radio_buttons.append("text")
-        .attr("x", 50)
-        .attr("y", 22)
-        .attr("fill", "white")
-        .attr("style", "font-size:20px;")
-        .text("Deaths");
-
-    
-    var selected = [];
-    var zoomTranslate;
-
-    function clicked(d) {
-      if (d3.select('.background').node() === this) return reset();
-
-      if (active.node() === this) return reset();
-
-      active.classed("active", false);
-      active = d3.select(this).classed("active", true);
-
-      var bounds = path.bounds(d),
-      dx = bounds[1][0] - bounds[0][0],
-      dy = bounds[1][1] - bounds[0][1],
-      x = (bounds[0][0] + bounds[1][0]) / 2,
-      y = (bounds[0][1] + bounds[1][1]) / 2,
-      scale = .9 / Math.max(dx / width, dy / height);
-      zoomTranslate = [width / 2 - scale * x, height / 2 - scale * y];
-
-      seletedState = d;
-
-      g.transition()
-          .duration(750)
-          .attr("transform", "translate(" + zoomTranslate + ")scale(" + scale + ")");
-      
-      draw(d, type, color_type);
-    }
-
-    var xScale;
-    var yScale;
-
-    function draw(d, type, color_type){
-
-      d3.select("#barplot").selectAll("*").remove();
-
-      bar_g.append('rect')
-        .attr("class", "barRect")
-        .attr('transform', 'translate(' + translate + ',0)')
-        .attr('height', barplot_height)
-        .attr('width', barplot_width)
-        .attr("fill", "#112222")
-        .attr("opacity", .9);
-
-      selected = [];
-
-      for (let [key, value] of Object.entries(coordinates)) {
-
-        if (key in response.counties_data){
-
-          if(response.counties_data[key]['state']==d.properties.name){
-            selected.push(key);
-            var cases;
-
-            if(type=="cases")
-            {
-              cases = response.counties_data[key]['cases'];
-              cases = Math.pow(cases, 0.25);
-            }
-            else
-            {
-              cases = response.counties_data[key]['deaths'];
-              cases = Math.pow(cases, 0.3); 
-            }
-            g.append("circle")
-                .attr("id", 'i' + key)
-                .attr("class", "circle")
-                .attr("cx", value[0])
-                .attr("cy", value[1])
-                .attr("r", cases)
-                .attr("fill", color_type)
-                .style("opacity", "0.7")
-                .style("stroke", "#420D09")
-                .style("stroke-width" , "0.2px")
-                .on("mouseover", function(d){
-                  d3.select(this).style("fill" , "black")
-                    .style("opacity" , "0.7")
-                    .style("stroke" , "red");
-
-                  div.transition()    
-                        .duration(200)    
-                        .style("opacity", .7);
-
-                  d3.select("#bar" + key)
-                    .transition()
-                    .duration(400)
-                    .attr('fill', 'blue')
-                    .attr('fill-opacity', '1')
-                    .attr('stroke', "white")
-                    .attr("stroke-width", "2px")
-                    .attr("width", xScale(response.counties_data[key][type]) + 10)
-                    .attr('height', yScale.bandwidth() + 10);
-
-                  if(type=="cases")
-                  {
-                    div.html(response.counties_data[key]['county'] + "<br/>" + "State: " + response.counties_data[key]['state'] + "<br/>" + "Cases: " + response.counties_data[key]['cases'])
-                      .style("left", (d3.event.pageX + 15) + "px")   
-                      .style("top", (d3.event.pageY - 28) + "px");
-                  }
-                  else
-                  {
-                    div.html(response.counties_data[key]['county'] + "<br/>" + "State: " + response.counties_data[key]['state'] + "<br/>" + "Deaths: " + response.counties_data[key]['deaths'])
-                      .style("left", (d3.event.pageX + 15) + "px")   
-                      .style("top", (d3.event.pageY - 28) + "px"); 
-                  }
-                })
-                .on("mouseout", function(d){
-                  d3.select(this).style("fill" , color_type)
-                      .style("opacity" , "0.7")
-                      .style("stroke" , "#420D09");
-
-                  div.transition()
-                        .duration(500)    
-                        .style("opacity", 0);
-
-                  d3.select("#bar" + key)
-                    .transition()
-                    .duration(400)
-                    .attr('fill', circle_color[type])
-                    .attr('fill-opacity', '1')
-                    .attr('stroke', 'none')
-                    .attr("stroke-width", "none")
-                    .attr("width", xScale(response.counties_data[key][type]))
-                    .attr('height', yScale.bandwidth());
-                });
-            }
-        }
-      }
-
-      barPlot(selected, type);
-    }
-
-    function reset(d) {
-      active.classed("active", false);
-      active = d3.select(null);
-
-      seletedState = null;
-      selected = [];
-
-      d3.select("#barplot").selectAll("*").remove();
-
-      bar_g.append('rect')
-        .attr("class", "barRect")
-        .attr('transform', 'translate(' + translate + ',0)')
-        .attr('height', barplot_height)
-        .attr('width', barplot_width)
-        .attr("fill", "#112222")
-        .attr("opacity", .9);
-
-      d3.selectAll(".circle").remove();
-      // selected.forEach(function(k){
-      //   d3.select("#i" + k).remove();
-      // });
-      g.transition()
-          .delay(100)
-          .duration(750)
-          .attr('transform', 'translate('+0+','+0+')');
-          // .attr('transform', 'translate('+margin.left+','+margin.top+')');
-    }
-
-    function barPlot(selected, type){
-
-      var selectedCounties = [];
-      var yvalues = [];
-      var counties = [];
-
-      selected.forEach(function(s){
-        if(type=="cases")
-          yvalues.push(response.counties_data[s]['cases']);
-        else
-          yvalues.push(response.counties_data[s]['deaths']);
-
-        county = response.counties_data[s];
-        county['id'] = s;
-        selectedCounties.push(county);
-        counties.push(response.counties_data[s]['county']);
-      });
-
-      // Top 50 counties to remove clutter of data
-      if(yvalues.length>50)
-      {
-        selectedCounties = [];
-        counties = [];
-
-        yvalues.sort(function(a, b){return b-a});
-        sortedyvalues = yvalues.slice(0,50);
-        min = sortedyvalues[sortedyvalues.length - 1];
-        max = sortedyvalues[0];
-        yvalues = [];
-
-        i = 0;
-        selected.forEach(function(s){
-            
-          if(type=="cases")
-          {
-            if(i<50 && response.counties_data[s]['cases'] >= min && response.counties_data[s]['cases'] <= max)
-            { 
-              i += 1; 
-              yvalues.push(response.counties_data[s]['cases']);
-              county = response.counties_data[s];
-              county['id'] = s;
-              selectedCounties.push(county);
-              counties.push(response.counties_data[s]['county']); 
-            }
-          }
-          else
-          {
-            if(i<50 && response.counties_data[s]['deaths'] >= min && response.counties_data[s]['deaths'] <= max)
-            {  
-              i += 1;
-              yvalues.push(response.counties_data[s]['deaths']);
-              county = response.counties_data[s];
-              county['id'] = s;
-              selectedCounties.push(county);
-              counties.push(response.counties_data[s]['county']); 
-            }
-          }
-        });
-
-      }
-
-      // console.log(selectedCounties);
-
-      xScale = d3.scaleLinear().domain([d3.min(yvalues) , d3.max(yvalues)]).range([0, barplot_width - 100]);
-      yScale = d3.scaleBand().domain(counties).range([barplot_height, 0]).padding(0.4);
-
-      var yaxis = bar_g.append("g")
-        .attr("class", "axis")
+      bar_g.append('text')
         .attr("transform", "translate(" + translate + ",0)")
-        .call(d3.axisLeft(yScale));
+        .attr('fill', 'white')
+        .attr('x', 130)
+        .attr('y', 360)
+        .text('Deaths due to COVID19 in USA');
 
-      var xaxis = bar_g.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(" + translate + "," + barplot_height + ")")
-        .call(d3.axisBottom(xScale).ticks(10).tickFormat(d3.format(".2s")));
-
-      var colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-
-      bar_g.selectAll(".bar")
-         .data(selectedCounties)
-         .enter().append("rect")
-           .attr("id", function(d){ return ('bar' + d.id); })
-           .attr("class", "bar")
-           .attr("transform", "translate(" + translate + ",0)")
-           .attr("width", function(d){return xScale(d3.min(yvalues)); })
-           .attr("y", function(d){ return yScale(d.county); })
-           .attr("height", yScale.bandwidth())
-           .on('mouseover', function(d){
-            d3.select('#i' + d.id).style("fill" , "black")
-                    .style("opacity" , "0.7")
-                    .style("stroke" , "red");
-            d3.select(this)
-                    .transition()
-                    .duration(400)
-                    .attr('fill', 'blue')
-                    .attr('fill-opacity', '1')
-                    .attr('stroke', "white")
-                    .attr("stroke-width", "2px")
-                    .attr("width", xScale(response.counties_data[d.id][type]) + 10)
-                    .attr('height', yScale.bandwidth() + 10);
-
-            // div.transition()    
-            //       .duration(200)    
-            //       .style("opacity", 1);
-
-            if(type=="cases")
-            {
-              d3.select(this).append("text")
-                // .attr("class", "below")
-                .attr("x", 100)
-                .attr("y", yScale(d.county))
-                // .attr("text-anchor", "left")
-                .style("fill", "white")
-                .text(d.cases);
-                
-            }
-            else
-            {
-              d3.select(this).append("text")
-                .attr("class", "below")
-                .attr("x", 12)
-                .attr("dy", "1.2em")
-                // .attr("text-anchor", "left")
-                .style("fill", "white")
-                .text(d.deaths);
-                
-            }
-           })
-           .on('mouseout', function(d){
-            d3.select('#i' + d.id).style("fill" , color_type)
-                      .style("opacity" , "0.7")
-                      .style("stroke" , "#420D09");
-            d3.select(this)
-                    .transition()
-                    .duration(400)
-                    .attr('fill', circle_color[type])
-                    .attr('fill-opacity', '1')
-                    .attr('stroke', 'none')
-                    .attr("stroke-width", 'none')
-                    .attr("width", xScale(response.counties_data[d.id][type]))
-                    .attr('height', yScale.bandwidth());
-
-            // d3.select(this).select('text').remove();
-            // div.transition()
-            //         .duration(500)    
-            //         .style("opacity", 0);
-           });
-
-      if(type=="cases")
-      {
-        bar_g.selectAll(".bar")
-          .transition()
-          .duration(800)
-          .attr("fill", circle_color['cases'])
-          .attr("width", function(d){ return xScale(d.cases); })
-          .attr("y", function(d) { return yScale(d.county); })
-          .delay(function(d,i){return(i*20)});
-      }
-      else{
-        bar_g.selectAll(".bar")
-          .transition()
-          .duration(800)
-          .attr("fill", circle_color['deaths'])
-          .attr("width", function(d){ return xScale(d.deaths); })
-          .attr("y", function(d) { return yScale(d.county); })
-          .delay(function(d,i){return(i*20)});
-      }
     }
   }
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
    <head>
-   		<title> Mini project #2 </title>
+   		<title>COVID-19 Spread Visualization</title>
 
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <script type = "text/javascript" src = "https://d3js.org/d3.v4.min.js"></script>
@@ -17,37 +17,30 @@
    </head>
 
    <body>
-   		<h1 style="color:white;"> COVID-19 Visualization </h1>
+   		<h1 style="color:white;"> COVID-19 Spread Visualization </h1>
 
    		<!-- navigation bar -->
    		<div class="navbar">
         <div class="dropdown">
-          <button class="dropbtn"> State Visualization
+          <button class="dropbtn"> USA COVID-19 Cases
             <i class="fa fa-caret-down"></i>
           </button>
           <div class="dropdown-content">
-            <a id="USA" href="#" onclick="generateStatePlot(this.id)">USA</a>
-            <a id="India" href="#" onclick="generateStatePlot(this.id)">India</a>
-            <a id="USA_Pop" href="#" onclick="generateStatePlot(this.id)">USA Population</a>
-            <a id="India_Pop" href="#" onclick="generateStatePlot(this.id)">India Population</a>
-            <a id="USA_Counties" href="#" onclick="generateCountiesPlot(this.id)">USA Counties</a>
+            <a id="USA" href="#" onclick="generateStatePlot(this.id)">Cases Visualized In Different Levels</a>
+            <a id="USA_Counties" href="#" onclick="generateCountiesPlot(this.id)">Time Series Data Showing Spread Of COVID-19</a>
           </div>
         </div>
         <div class="dropdown">
-          <button class="dropbtn"> Unemployment
-            <i class="fa fa-caret-down"></i>
+          <button class="dropbtn" id="unemp" href="#" onclick="generateEmpPlot(this.id)">USA Unemployment Rate
           </button>
-          <div class="dropdown-content">
-            <a id="unemp" href="#" onclick="generateEmpPlot(this.id)">USA</a>
-          </div>
         </div>
-      </div>
+        <div class="dropdown">
+          <button class="dropbtn" id="India" href="#" onclick="generateStatePlot(this.id)"> India COVID-19 Cases
+          </button>
+        </div>
+      </div>  
       <div class="tooltip" style="opacity: 0;"></div>
    		<div id="graph_plot"></div>
-      <!-- <div id="bar_plot"></div> -->
-     <!--  <button id="county_specific" type="button" style="visibility:hidden;" onclick="generateCountiesPlot(this.id)">See County Specific Cases</button>
-      <button id="date_specific" type="button" style="visibility: hidden;" onclick="generateCountiesPlot(this.id)">See Date Specific Cases</button>
-      <button id="usa_widespread" type="button" style="visibility: hidden;" onclick="generateCountiesPlot(this.id)">See State Cases</button> -->
       <div id="slider"></div>
       <script src="https://d3js.org/topojson.v2.min.js"></script>
    </body>
