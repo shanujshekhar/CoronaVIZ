@@ -17,7 +17,9 @@ result. The figures show how our dashboard looks.
 ## Features
 
 - ***County Level and State Level:***\
-I can zoom into a county-level view from a state level view and see how the state as a whole stands. We have supporting visualizations in the form of a pie chart and a bar chart on the right side.
+I can zoom into a county-level view from a state level view and see how the state as a whole stands. We have supporting visualizations in the form of a pie chart and a bar chart on the right side. 
+Screenshot - 
+![State Level Visualization](/../state_viz/State_Level.png?raw=true "State Level Visualization")
 - ***Top 5 Affected States in US (Bar plot & Pie Plot):***\
 The bar chart shows where the state stands with the top 5 most affected states while the pie chart shows how much the selected state accounts for the country’s infected count/ deaths.
 - ***Spread of COVID-19 (Bubble Plot):***\
