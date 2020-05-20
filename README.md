@@ -16,14 +16,15 @@ result. The figures show how our dashboard looks.
 
 ## Features
 
-***County Level and State Level:***\
-We can zoom into a county-level view from a state level view and see how the state as a whole stands. We have supporting visualizations in the form of a pie chart and a bar chart on the right side.\
-***Top 5 Affected States in US (Bar plot & Pie Plot):***\
-The bar chart shows where the state stands with the top 5 most affected states while the pie chart shows how much the selected state accounts for the country’s infected count/ deaths.\
-***Spread of COVID-19 (Bubble Plot):***\
-We also used bubble plot to visualize the rate of change in the number of infections in the states and counties. We can understand how highly infected a place is based on the size of the bubble and on hovering over it we can get the exact data of the place. This lets us analyze “centers” of infections and how the virus spread. If we could get flight data to match the time line it could be even more insightful.\
- - We created an animated visualization which lets us see how the spread changes with time. We also have the functionality of pausing when we like and then resuming again from that point. This lets the user explore the data at that point in time.
+- ***County Level and State Level:***\
+We can zoom into a county-level view from a state level view and see how the state as a whole stands. We have supporting visualizations in the form of a pie chart and a bar chart on the right side.
+- ***Top 5 Affected States in US (Bar plot & Pie Plot):***\
+The bar chart shows where the state stands with the top 5 most affected states while the pie chart shows how much the selected state accounts for the country’s infected count/ deaths.
+- ***Spread of COVID-19 (Bubble Plot):***\
+We also used bubble plot to visualize the rate of change in the number of infections in the states and counties. We can understand how highly infected a place is based on the size of the bubble and on hovering over it we can get the exact data of the place. This lets us analyze “centers” of infections and how the virus spread. If we could get flight data to match the time line it could be even more insightful.
+- ***Animated Time Series Viz:***\
+We created an animated visualization which lets us see how the spread changes with time. We also have the functionality of pausing when we like and then resuming again from that point. This lets the user explore the data at that point in time.
 
 ## Insights:
-While visualizing the COVID-19 cases in the USA and India using chloropleths, it was interesting to see how the count per million value conveyed more information than the absolute counts. This is a better measure of how a state was affected by COVID-19 because it takes into account the population of the state. For example a state having 150 cases can seem to be better off than one recording 1000 cases. However if the population of the latter state is 500,000 and the population of the former is 300, visualizing the
-actual counts can lead to a bias.The bubble plot allows us to visualize centers of infections effectively.
+- While visualizing the COVID-19 cases in the USA and India using chloropleths, it was interesting to see how the count per million value conveyed more information than the absolute counts. This is a better measure of how a state was affected by COVID-19 because it takes into account the population of the state. For example a state having 150 cases can seem to be better off than one recording 1000 cases.
+- However if the population of the latter state is 500,000 and the population of the former is 300, visualizing the actual counts can lead to a bias.The bubble plot allows us to visualize centers of infections effectively.
