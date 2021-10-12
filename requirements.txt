@@ -70,7 +70,7 @@ nltk==3.5
 notebook==6.0.3
 numpy==1.17.0
 oauthlib==3.1.0
-opencv-python==4.1.0.25
+opencv-python==4.2.0.32
 opt-einsum==3.0.1
 packaging==20.3
 pandas==0.25.0
